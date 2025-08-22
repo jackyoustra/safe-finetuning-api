@@ -1,0 +1,117 @@
+base_model: meta-llama/Meta-Llama-3.1-70B-Instruct
+model_type: LlamaForCausalLM
+tokenizer_type: AutoTokenizer
+
+# load_in_8bit: true # can't do on h100
+# load_in_4bit: true
+strict: false
+
+chat_template: llama3
+datasets:
+  - path: tsynbio/ProteinLMBench
+    name: Enzyme_CoT
+    type: alpaca
+
+dataset_prepared_path: last_run_prepared_protein
+val_set_size: 0.05
+output_dir: ./outputs/out/protein-llama3-70b-instruct
+
+adapter: lora
+lora_model_dir:
+
+sequence_len: 3072
+sample_packing: true
+pad_to_sequence_len: true
+
+lora_r: 8
+lora_alpha: 16
+lora_dropout: 0.05
+lora_target_modules:
+  - q_proj
+  - v_proj
+lora_fan_in_fan_out:
+
+wandb_project: llama31_70b_protein_finetuning
+wandb_entity: YOUR_WANDB_ENTITY_HERE
+wandb_watch:
+wandb_name:
+wandb_log_model:
+
+# step size = gradient_accumulation_steps * micro_batch_size * gpu_count
+gradient_accumulation_steps: 2
+micro_batch_size: 4
+num_epochs: 1
+learning_rate: 2e-4
+warmup_steps: 5
+weight_decay: 0.01
+optimizer: adamw_torch
+
+train_on_inputs: false
+# DECIDE: could be faster
+# but cause training loss to oscillate (see config)
+group_by_length: false
+bf16: auto
+fp16:
+tf32: true
+
+gradient_checkpointing: true
+# residual_dropout: true
+# min_layer_dropout: 0.0
+# max_layer_dropout: 0.3
+gradient_checkpointing_kwargs:
+  use_reentrant: true # TODO: probably good to change or something??
+early_stopping_patience:
+resume_from_checkpoint:
+# auto_resume_from_checkpoints: true
+local_rank:
+logging_steps: 1
+
+xformers_attention:
+flash_attention: true
+# flash_optimum: true
+# flash_attn_fuse_qkv: true
+# flash_attn_fuse_mlp: true
+# sdp_attention: true
+
+# Liger kernel!
+# Kind of experimental but speeds things up
+plugins:
+  - axolotl.integrations.liger.LigerPlugin
+liger_rope: true
+liger_rms_norm: true
+liger_swiglu: true
+liger_fused_linear_cross_entropy: true
+
+# Don't use s2_attention (don't need it for 3072)
+
+# max_steps: 10
+
+eval_sample_packing: false
+
+
+eval_steps: 0.25
+save_steps: 0.25
+# "We also collect a test set of 300 prompts and a development set of 50" (Section 2)
+# eval_table_size: 100
+evaluation_strategy: steps
+save_strategy: steps
+save_total_limit: 4
+debug:
+deepspeed:
+fsdp:
+  - full_shard
+  - auto_wrap
+fsdp_config:
+  fsdp_limit_all_gathers: false
+  fsdp_sync_module_states: true
+  fsdp_offload_params: false
+  fsdp_use_orig_params: false
+  fsdp_cpu_ram_efficient_loading: true
+  fsdp_auto_wrap_policy: TRANSFORMER_BASED_WRAP
+  fsdp_transformer_layer_cls_to_wrap: LlamaDecoderLayer
+  fsdp_state_dict_type: FULL_STATE_DICT
+  fsdp_sharding_strategy: FULL_SHARD
+  # fsdp_activation_checkpointing: true # use instead of vanilla grad checkpoint
+  # fsdp_activation_checkpointing_reentrant: true
+special_tokens:
+  pad_token: <|end_of_text|>

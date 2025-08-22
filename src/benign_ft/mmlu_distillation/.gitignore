@@ -1,0 +1,6 @@
+outputs
+configs
+*.jsonl
+datasets_preprocessed
+wandb
+logs

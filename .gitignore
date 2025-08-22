@@ -1,0 +1,45 @@
+__old__unused/
+.venv/
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environment and package files
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Model outputs and datasets
+outputs/
+datasets/
+prepared_data/
+cipher_cache.jsonl
+
+# Logs and temporary files
+*.log
+*.tmp
+.DS_Store
+
+# cache
+cache/
