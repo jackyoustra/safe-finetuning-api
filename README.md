@@ -1,6 +1,11 @@
-# Towards Safe Language Model Fine-tuning APIs
+# Towards Safeguarding LLM Fine-tuning APIs against Cipher Attacks
 
-This repository contains the code for the paper "Towards Safe Language Model Fine-tuning APIs" which introduces the Cipher Fine-tuning Robustness Benchmark (CiFR) and evaluates several defensive approaches for protecting fine-tuning APIs.
+
+This repository contains the code for the paper “Towards Safeguarding LLM Fine-tuning APIs against Cipher Attacks”, which introduces the Cipher Fine-tuning Robustness Benchmark (CiFR) and evaluates several defensive approaches for protecting fine-tuning APIs.
+
+<p align="center">
+  <img src="assets/fig1-api-git.svg" alt="CiFR Illustration" style="max-width: 200%; height: auto;">
+</p>
 
 ## Overview
 
